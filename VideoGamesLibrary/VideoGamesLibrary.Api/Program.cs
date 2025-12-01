@@ -11,38 +11,19 @@ using VideoGamesLibrary.Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 
-// DbContext EF Core (SQLite)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<VideoGameLibraryDbContext>(options =>
     options.UseSqlite(connectionString));
 
-// Configuration des options JWT
+// Jwt options
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
 // Authentification / JWT
 var jwtConfig = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
 var keyBytes = Encoding.UTF8.GetBytes(jwtConfig.Key);
-
-// DI métiers
-// Repositories
-builder.Services.AddScoped<IUserRepository, EfUserRepository>();
-builder.Services.AddScoped<IGameRepository, EfGameRepository>();
-
-//Services
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
-
-// --- Configuration JWT ---
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSection["Key"]!);
 
 builder.Services
     .AddAuthentication(options =>
@@ -67,7 +48,22 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+// DI métiers
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameRepository, EfGameRepository>();
+
+builder.Services.AddScoped<IUserRepository, EfUserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<VideoGameLibraryDbContext>();
+    await DbInitializer.SeedAsync(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
