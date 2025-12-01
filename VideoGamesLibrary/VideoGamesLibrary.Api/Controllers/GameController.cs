@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using VideoGamesLibrary.Application.Dtos;
 using VideoGamesLibrary.Application.Interfaces;
 
@@ -6,6 +7,7 @@ namespace VideoGamesLibrary.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class GamesController : ControllerBase
 {
     private readonly IGameService _gameService;

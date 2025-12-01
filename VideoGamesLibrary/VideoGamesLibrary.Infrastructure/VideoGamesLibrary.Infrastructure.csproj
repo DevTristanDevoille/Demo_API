@@ -13,9 +13,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VideoGamesLibrary.Application\VideoGamesLibrary.Application.csproj" />
     <ProjectReference Include="..\VideoGamesLibrary.Domain\VideoGamesLibrary.Domain.csproj" />
   </ItemGroup>
 
