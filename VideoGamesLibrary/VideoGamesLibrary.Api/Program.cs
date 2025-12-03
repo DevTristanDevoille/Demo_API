@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
-using VideoGamesLibrary.Api.OpenApi;
 using VideoGamesLibrary.Application.Interfaces;
 using VideoGamesLibrary.Application.Services;
 using VideoGamesLibrary.Domain.Repositories;
@@ -13,11 +13,35 @@ using VideoGamesLibrary.Infrastructure.Security;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
-});
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Document de base
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "VideoGamesLibrary API",
+        Version = "v1"
+    });
+
+    // Définition du schéma d’authentification Bearer
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "JWT Authorization header using the Bearer scheme. " +
+                      "Exemple : \"Bearer 12345abcdef\"",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+
+    // Exigence de sécurité – NOUVELLE SYNTAXE .NET 10 / Swashbuckle 10
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        // La clé doit utiliser **exactement** le même nom que dans AddSecurityDefinition
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<VideoGameLibraryDbContext>(options =>
@@ -74,11 +98,11 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwaggerUI(options =>
+    app.UseSwagger();
+    app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "Video Games API v1");
-        // Optionnel : page d’accueil sur /swagger
-        options.RoutePrefix = "swagger";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
     });
 }
 

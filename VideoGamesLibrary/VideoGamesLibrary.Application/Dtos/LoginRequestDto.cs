@@ -2,7 +2,7 @@
 
 namespace VideoGamesLibrary.Application.Dtos
 {
-   public class LoginRequestDto
+    public class LoginRequestDto
     {
         [Required]
         public string Username { get; set; } = string.Empty;
