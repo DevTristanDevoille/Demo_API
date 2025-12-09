@@ -18,7 +18,7 @@ public class EfGameRepository : IGameRepository
     {
         return await _context.Games
             .AsNoTracking()
-            .OrderBy(g => g.Title)
+            .OrderBy(g => g.Id)
             .ToListAsync();
     }
 
