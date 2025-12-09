@@ -8,11 +8,13 @@ namespace VideoGamesLibrary.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator)
+        public UserService(IUserRepository userRepository, ITokenGenerator tokenGenerator, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
             _tokenGenerator = tokenGenerator;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<LoginResultDto> Login(LoginRequestDto request)
@@ -27,9 +29,8 @@ namespace VideoGamesLibrary.Application.Services
                 };
             }
 
-            // Démo : comparaison directe.
-            // À expliquer : en vrai, comparer un mot de passe haché et salé.
-            if (user.Password != request.Password)
+            var valid = _passwordHasher.VerifyPassword(user.Password, request.Password);
+            if (!valid)
             {
                 return new LoginResultDto
                 {

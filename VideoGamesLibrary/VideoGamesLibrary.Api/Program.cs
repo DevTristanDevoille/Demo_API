@@ -85,6 +85,9 @@ builder.Services.AddScoped<IUserRepository, EfUserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
 
+// Hasher de mot de passe
+builder.Services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

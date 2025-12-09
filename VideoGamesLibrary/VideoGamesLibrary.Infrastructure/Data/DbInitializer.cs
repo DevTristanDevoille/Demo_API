@@ -16,18 +16,23 @@ public static class DbInitializer
             new User
             {
                 Username = "admin",
-                Password = "password",
+                Password = "AQAAAAIAAYagAAAAECcuSZMjFdCazAPjxBVlAmCQZWyRqg6fggGoLMXikuXaZ2Fz6SD+kDP1aSDeaGUbvg==",
                 Role = "Admin",
-                Email = "admin@admin.fr",
-                Salt = "a1f4s5fe4"
+                Email = "admin@admin.fr"
             },
             new User
             {
                 Username = "user",
-                Password = "password",
+                Password = "AQAAAAIAAYagAAAAEPfiLei9vzYZAbxxbd9VpIOZ27gwCrc/MZLfXVNXPtj8DEOWkL9QO4foKnXkuoiP1A==",
                 Role = "User",
-                Email = "user@user.fr",
-                Salt = "9f8g7h6j5k",
+                Email = "user@user.fr"
+            },
+            new User
+            {
+                Username = "plop",
+                Password = "AQAAAAIAAYagAAAAELwP0fHSzY9JOkS1jKuYKGsTt69+2wtm4EKtes/W173q6HyVmZOvdN2p2k4s3YMKTQ==",
+                Role = "User",
+                Email = "plop@plop.fr"
             }
         };
 

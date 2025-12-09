@@ -4,12 +4,6 @@ using VideoGamesLibrary.Application.Interfaces;
 
 namespace VideoGamesLibrary.Api.Controllers;
 
-public class LoginRequest
-{
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
-
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : Controller
