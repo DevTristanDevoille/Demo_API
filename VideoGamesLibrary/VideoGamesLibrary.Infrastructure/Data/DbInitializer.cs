@@ -17,13 +17,17 @@ public static class DbInitializer
             {
                 Username = "admin",
                 Password = "password",
-                Role = "Admin"
+                Role = "Admin",
+                Email = "admin@admin.fr",
+                Salt = "a1f4s5fe4"
             },
             new User
             {
                 Username = "user",
                 Password = "password",
-                Role = "User"
+                Role = "User",
+                Email = "user@user.fr",
+                Salt = "9f8g7h6j5k",
             }
         };
 
