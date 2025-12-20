@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoGamesLibrary.Api", "Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoGamesLibrary.UnitTests", "VideoGamesLibrary.UnitTests\VideoGamesLibrary.UnitTests.csproj", "{7714BD10-D8A9-43BE-B137-8E01838B3911}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoGamesLibrary.Api.IntegrationTests", "VideoGamesLibrary.Api.IntegrationTests\VideoGamesLibrary.Api.IntegrationTests.csproj", "{FC622763-7D77-4C5E-956D-057D2B0127D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7714BD10-D8A9-43BE-B137-8E01838B3911}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7714BD10-D8A9-43BE-B137-8E01838B3911}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7714BD10-D8A9-43BE-B137-8E01838B3911}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC622763-7D77-4C5E-956D-057D2B0127D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC622763-7D77-4C5E-956D-057D2B0127D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC622763-7D77-4C5E-956D-057D2B0127D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC622763-7D77-4C5E-956D-057D2B0127D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
