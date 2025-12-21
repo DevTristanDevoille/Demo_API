@@ -90,20 +90,19 @@ builder.Services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<VideoGameLibraryDbContext>();
-    await DbInitializer.SeedAsync(context);
-}
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+    if (app.Environment.EnvironmentName == "Docker")
+        await context.Database.MigrateAsync();
+
+    await DbInitializer.SeedAsync(context);
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+    app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         options.RoutePrefix = string.Empty;
