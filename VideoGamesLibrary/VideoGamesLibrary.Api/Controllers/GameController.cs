@@ -8,6 +8,8 @@ namespace VideoGamesLibrary.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+[Produces("application/json")]
+[ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
 public class GamesController : ControllerBase
 {
     private readonly IGameService _gameService;
@@ -17,16 +19,21 @@ public class GamesController : ControllerBase
         _gameService = gameService;
     }
 
-    // GET: api/games
     [HttpGet]
+    [EndpointSummary("Retrieve all games")]
+    [EndpointDescription("Allows you to retrieve the raw list of all games")]
+    [ProducesResponseType(typeof(List<GameDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<List<GameDto>>> GetAll()
     {
         var games = await _gameService.GetAllAsync();
         return Ok(games);
     }
 
-    // GET: api/games/{id}
     [HttpGet("{id:int}")]
+    [EndpointSummary("Get all game information")]
+    [EndpointDescription("Allows you to retrieve all information related to a game (Title, Platform etc.)")]
+    [ProducesResponseType(typeof(GameDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GameDto>> GetById(int id)
     {
         var game = await _gameService.GetByIdAsync(id);
@@ -38,8 +45,11 @@ public class GamesController : ControllerBase
         return Ok(game);
     }
 
-    // POST: api/games
     [HttpPost]
+    [EndpointSummary("Create a game")]
+    [EndpointDescription("Allows you to create a game")]
+    [ProducesResponseType(typeof(GameDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest, Description = "Fields is missing or invalid")]
     public async Task<ActionResult<GameDto>> Create([FromBody] CreateGameDto dto)
     {
         if (!ModelState.IsValid)
@@ -53,8 +63,11 @@ public class GamesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // PUT: api/games/{id}
     [HttpPut("{id:int}")]
+    [EndpointSummary("Update game information")]
+    [EndpointDescription("Allows you to update information related to a game (Title, Platform etc.)")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest, Description = "Fields is missing or invalid")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateGameDto dto)
     {
         if (!ModelState.IsValid)
@@ -71,8 +84,11 @@ public class GamesController : ControllerBase
         return NoContent(); // 204
     }
 
-    // DELETE: api/games/{id}
     [HttpDelete("{id:int}")]
+    [EndpointSummary("Delete a game")]
+    [EndpointDescription("Allows you to delete a game")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         var success = await _gameService.DeleteAsync(id);
