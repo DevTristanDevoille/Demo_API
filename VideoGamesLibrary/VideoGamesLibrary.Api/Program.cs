@@ -28,7 +28,8 @@ builder.Services.AddSwaggerGen(options =>
     {
         Name = "Authorization",
         Description = "JWT Authorization header using the Bearer scheme. " +
-                      "Exemple : \"Bearer 12345abcdef\"",
+                      "Collez uniquement le jeton, sans le préfixe \"Bearer\" : " +
+                      "Swagger l'ajoute automatiquement.",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
