@@ -24,7 +24,7 @@ public class CustomWebApplicationFactory<TProgram>
         {
             // On retire l'enregistrement du DbContext défini dans Program.cs
             // (SQLite sur fichier) pour le remplacer par le nôtre.
-            RemoveService(services, typeof(IDbContextOptionsConfiguration<VideoGameLibraryDbContext>));
+            RemoveService(services, typeof(IDbContextOptionsConfiguration<VideoGamesLibraryDbContext>));
             RemoveService(services, typeof(DbConnection));
 
             // La connexion est ouverte et enregistrée en singleton : SQLite détruit
@@ -37,7 +37,7 @@ public class CustomWebApplicationFactory<TProgram>
                 return connection;
             });
 
-            services.AddDbContext<VideoGameLibraryDbContext>((container, options) =>
+            services.AddDbContext<VideoGamesLibraryDbContext>((container, options) =>
                 options.UseSqlite(container.GetRequiredService<DbConnection>()));
         });
 
@@ -54,7 +54,7 @@ public class CustomWebApplicationFactory<TProgram>
         var host = base.CreateHost(builder);
 
         using var scope = host.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<VideoGameLibraryDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<VideoGamesLibraryDbContext>();
 
         context.Database.EnsureCreated();
         DbInitializer.SeedAsync(context).GetAwaiter().GetResult();

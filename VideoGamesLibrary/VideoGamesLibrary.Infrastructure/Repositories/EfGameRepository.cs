@@ -7,9 +7,9 @@ namespace VideoGamesLibrary.Infrastructure.Repositories;
 
 public class EfGameRepository : IGameRepository
 {
-    private readonly VideoGameLibraryDbContext _context;
+    private readonly VideoGamesLibraryDbContext _context;
 
-    public EfGameRepository(VideoGameLibraryDbContext context)
+    public EfGameRepository(VideoGamesLibraryDbContext context)
     {
         _context = context;
     }

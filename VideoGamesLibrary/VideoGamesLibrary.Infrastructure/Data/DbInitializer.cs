@@ -4,7 +4,7 @@ namespace VideoGamesLibrary.Infrastructure.Data;
 
 public static class DbInitializer
 {
-    public static async Task SeedAsync(VideoGameLibraryDbContext context)
+    public static async Task SeedAsync(VideoGamesLibraryDbContext context)
     {
         if (context.Users.Any())
         {

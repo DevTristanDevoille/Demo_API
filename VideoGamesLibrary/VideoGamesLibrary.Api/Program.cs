@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1"
     });
 
-    // D�finition du sch�ma d�authentification Bearer
+    // Définition du schéma d’authentification Bearer
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -35,16 +35,16 @@ builder.Services.AddSwaggerGen(options =>
         BearerFormat = "JWT"
     });
 
-    // Exigence de s�curit� � NOUVELLE SYNTAXE .NET 10 / Swashbuckle 10
+    // Exigence de sécurité – NOUVELLE SYNTAXE .NET 10 / Swashbuckle 10
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        // La cl� doit utiliser **exactement** le m�me nom que dans AddSecurityDefinition
+        // La clé doit utiliser **exactement** le même nom que dans AddSecurityDefinition
         [new OpenApiSecuritySchemeReference("Bearer", document)] = []
     });
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<VideoGameLibraryDbContext>(options =>
+builder.Services.AddDbContext<VideoGamesLibraryDbContext>(options =>
     options.UseSqlite(connectionString));
 
 // Jwt options
@@ -77,7 +77,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// DI m�tiers
+// DI métiers
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, EfGameRepository>();
 
@@ -90,14 +90,16 @@ builder.Services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
 
 var app = builder.Build();
 
-// Initialisation de la base de donnees : uniquement pour les environnements de demo.
-// En environnement "Test", c'est la factory des tests d'integration qui cree et alimente
-// la base en memoire ; l'API ne doit pas y toucher au demarrage.
+// Initialisation de la base de données : uniquement pour les environnements de démo.
+// Le schéma n'est PAS créé ici en Development : il faut lancer "dotnet ef database update"
+// avant le premier démarrage (voir le README).
+// En Docker le conteneur part d'une base vide, la migration y est donc appliquée au démarrage.
+// En environnement "Test", c'est la factory des tests d'intégration qui prend le relais.
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<VideoGameLibraryDbContext>();
+    var context = services.GetRequiredService<VideoGamesLibraryDbContext>();
 
     if (app.Environment.IsEnvironment("Docker"))
         await context.Database.MigrateAsync();
@@ -105,7 +107,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
     await DbInitializer.SeedAsync(context);
 }
 
-// Documentation Swagger : exposee partout sauf en production.
+// Documentation Swagger : exposée partout sauf en production.
 if (!app.Environment.IsProduction())
 {
     app.UseSwagger();

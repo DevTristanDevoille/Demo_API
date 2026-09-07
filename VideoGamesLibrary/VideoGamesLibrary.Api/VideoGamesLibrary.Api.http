@@ -1,6 +1,68 @@
-@VideoGamesLibrary.Api_HostAddress = http://localhost:5104
+﻿@VideoGamesLibrary.Api_HostAddress = http://localhost:5104
 
-GET {{VideoGamesLibrary.Api_HostAddress}}/weatherforecast/
+### 1. Authentification : récupère un jeton JWT
+# Comptes du seed : admin/admin (rôle Admin), user/user, plop/plop
+# @name login
+POST {{VideoGamesLibrary.Api_HostAddress}}/api/User/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+### 2. Liste des jeux SANS jeton -> 401 Unauthorized
+GET {{VideoGamesLibrary.Api_HostAddress}}/api/games
 Accept: application/json
 
-###
+### 3. Liste des jeux AVEC le jeton de la requête 1 -> 200 OK
+GET {{VideoGamesLibrary.Api_HostAddress}}/api/games
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 4. Détail d'un jeu -> 200 OK
+GET {{VideoGamesLibrary.Api_HostAddress}}/api/games/1
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 5. Jeu inexistant -> 404 Not Found
+GET {{VideoGamesLibrary.Api_HostAddress}}/api/games/999
+Accept: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+### 6. Création d'un jeu -> 201 Created (voir l'en-tête Location)
+POST {{VideoGamesLibrary.Api_HostAddress}}/api/games
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "title": "Hollow Knight",
+  "platform": "PC",
+  "genre": "Metroidvania",
+  "releaseDate": "2017-02-24T00:00:00"
+}
+
+### 7. Création invalide, Title manquant -> 400 Bad Request
+POST {{VideoGamesLibrary.Api_HostAddress}}/api/games
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "platform": "PC"
+}
+
+### 8. Mise à jour du jeu créé en 6 -> 204 No Content
+PUT {{VideoGamesLibrary.Api_HostAddress}}/api/games/3
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.$.token}}
+
+{
+  "title": "Hollow Knight: Silksong",
+  "platform": "PC",
+  "genre": "Metroidvania",
+  "releaseDate": "2025-09-04T00:00:00"
+}
+
+### 9. Suppression du jeu -> 204 No Content
+DELETE {{VideoGamesLibrary.Api_HostAddress}}/api/games/3
+Authorization: Bearer {{login.response.body.$.token}}

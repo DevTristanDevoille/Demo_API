@@ -7,9 +7,9 @@ namespace VideoGamesLibrary.Infrastructure.Repositories
 {
     public class EfUserRepository : IUserRepository
     {
-        private readonly VideoGameLibraryDbContext _context;
+        private readonly VideoGamesLibraryDbContext _context;
 
-        public EfUserRepository(VideoGameLibraryDbContext context)
+        public EfUserRepository(VideoGamesLibraryDbContext context)
         {
             _context = context;
         }

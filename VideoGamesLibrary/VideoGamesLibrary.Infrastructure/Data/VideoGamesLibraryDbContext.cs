@@ -3,9 +3,9 @@ using VideoGamesLibrary.Domain.Entities;
 
 namespace VideoGamesLibrary.Infrastructure.Data;
 
-public class VideoGameLibraryDbContext : DbContext
+public class VideoGamesLibraryDbContext : DbContext
 {
-    public VideoGameLibraryDbContext(DbContextOptions<VideoGameLibraryDbContext> options)
+    public VideoGamesLibraryDbContext(DbContextOptions<VideoGamesLibraryDbContext> options)
         : base(options)
     {
     }

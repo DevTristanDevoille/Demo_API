@@ -10,7 +10,7 @@ using VideoGamesLibrary.Infrastructure.Data;
 
 namespace VideoGamesLibrary.Infrastructure.Migrations
 {
-    [DbContext(typeof(VideoGameLibraryDbContext))]
+    [DbContext(typeof(VideoGamesLibraryDbContext))]
     [Migration("20251209142021_DeleteSalt")]
     partial class DeleteSalt
     {

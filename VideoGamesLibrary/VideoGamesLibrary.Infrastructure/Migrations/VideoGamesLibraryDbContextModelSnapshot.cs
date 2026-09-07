@@ -9,8 +9,8 @@ using VideoGamesLibrary.Infrastructure.Data;
 
 namespace VideoGamesLibrary.Infrastructure.Migrations
 {
-    [DbContext(typeof(VideoGameLibraryDbContext))]
-    partial class VideoGameLibraryDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(VideoGamesLibraryDbContext))]
+    partial class VideoGamesLibraryDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
