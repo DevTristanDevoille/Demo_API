@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="VideoGamesLibrary.Api.IntegrationTests/VideoGamesLibrary.Api.IntegrationTests.csproj" />
+  <Project Path="VideoGamesLibrary.Api/VideoGamesLibrary.Api.csproj" />
+  <Project Path="VideoGamesLibrary.Application/VideoGamesLibrary.Application.csproj" />
+  <Project Path="VideoGamesLibrary.Domain/VideoGamesLibrary.Domain.csproj" />
+  <Project Path="VideoGamesLibrary.Infrastructure/VideoGamesLibrary.Infrastructure.csproj" />
+  <Project Path="VideoGamesLibrary.UnitTests/VideoGamesLibrary.UnitTests.csproj" />
+</Solution>
