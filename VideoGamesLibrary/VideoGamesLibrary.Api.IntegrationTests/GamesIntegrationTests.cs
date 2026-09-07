@@ -1,10 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using VideoGamesLibrary.Application.Dtos;
-using VideoGamesLibrary.Infrastructure.Data;
 
 namespace VideoGamesLibrary.Api.IntegrationTests;
 
@@ -16,53 +13,45 @@ public class TestDto
 public class GamesIntegrationTests : IClassFixture<CustomWebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    private readonly CustomWebApplicationFactory<Program> _factory;
 
     public GamesIntegrationTests(CustomWebApplicationFactory<Program> factory)
     {
-        _factory = factory;
         _client = factory.CreateClient();
     }
 
     [Fact]
     public async Task GetAllGames_ShouldReturn200AndSeededGame()
     {
-        // Arrange
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var scopedServices = scope.ServiceProvider;
-            var db = scopedServices.GetRequiredService<VideoGameLibraryDbContext>();
+        // Arrange : la base en mémoire est déjà créée et alimentée par la factory.
 
-            db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
+        // Act : sans jeton, l'API doit refuser l'accès
+        var anonymousResponse = await _client.GetAsync("/api/games");
 
-            await DbInitializer.SeedAsync(db);
-        }
-        // Act
-        var response1 = await _client.GetAsync("/api/games");
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, anonymousResponse.StatusCode);
 
-        // Assert (HTTP)
-        Assert.Equal(HttpStatusCode.Unauthorized, response1.StatusCode);
-
-        var body = new
+        // Act : on s'authentifie pour récupérer un jeton JWT
+        var loginResponse = await _client.PostAsJsonAsync("/api/User/login", new LoginRequestDto
         {
             Username = "plop",
             Password = "plop"
-        };
+        });
 
-        HttpContent content = JsonContent.Create(body);
+        loginResponse.EnsureSuccessStatusCode();
 
-        var appelToken = await _client.PostAsync("api/User/login",content);
+        var login = await loginResponse.Content.ReadFromJsonAsync<TestDto>();
+        Assert.NotNull(login);
 
-        TestDto token = await appelToken.Content.ReadFromJsonAsync<TestDto>();
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", login.Token);
 
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+        // Act : le même appel, cette fois authentifié
+        var authenticatedResponse = await _client.GetAsync("/api/games");
 
-        var response2 = await _client.GetAsync("/api/games");
+        // Assert
+        authenticatedResponse.EnsureSuccessStatusCode();
 
-        // Assert (contenu)
-        var games = await response2.Content.ReadFromJsonAsync<List<GameDto>>();
+        var games = await authenticatedResponse.Content.ReadFromJsonAsync<List<GameDto>>();
         Assert.NotNull(games);
-        Assert.Contains(games!, g => g.Title == "Elden Ring");
+        Assert.Contains(games, g => g.Title == "Elden Ring");
     }
 }

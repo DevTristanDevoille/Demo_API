@@ -90,17 +90,24 @@ builder.Services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
 
 var app = builder.Build();
 
-if (!app.Environment.IsProduction())
+// Initialisation de la base de donnees : uniquement pour les environnements de demo.
+// En environnement "Test", c'est la factory des tests d'integration qui cree et alimente
+// la base en memoire ; l'API ne doit pas y toucher au demarrage.
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<VideoGameLibraryDbContext>();
 
-    if (app.Environment.EnvironmentName == "Docker")
+    if (app.Environment.IsEnvironment("Docker"))
         await context.Database.MigrateAsync();
 
     await DbInitializer.SeedAsync(context);
-    app.MapOpenApi();
+}
+
+// Documentation Swagger : exposee partout sauf en production.
+if (!app.Environment.IsProduction())
+{
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
